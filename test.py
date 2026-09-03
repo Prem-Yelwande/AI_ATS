@@ -1,12 +1,12 @@
-from extractor import Doc_Extractor
+from agents import Resume_Extractor
 from rich import print
 
-resume_path = r"C:\Users\24101A0079\Desktop\Application Tracking System\dummy_resume.pdf"
+
 
 def main():
-    agent = Doc_Extractor()
+    agent = Resume_Extractor()
 
-    resume_path = "resume.pdf"
+    resume_path = r"C:\Users\24101A0079\Desktop\Application Tracking System\dummy_resume.pdf"
 
     result = agent.invoke({
         "messages": [
@@ -17,7 +17,9 @@ def main():
         ]
     })
 
-    print(result)
+    resume = result["structured_response"]
+
+    print(resume)
 
 
 if __name__ == "__main__":

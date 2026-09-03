@@ -18,4 +18,14 @@ llm1 = ChatMistralAI(
     temperature=0
 )
 
-
+def Resume_Extractor():
+    return create_agent(
+        model=llm1,
+        tools=[
+            file_type_detector,
+            pdf_extractor,
+            docx_extractor
+        ],
+        system_prompt= ResumeExtractor(),
+        response_format=ResumeData
+    )

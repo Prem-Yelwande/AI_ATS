@@ -6,7 +6,7 @@ from rich import print
 def main():
     agent = Resume_Extractor()
 
-    resume_path = r"C:\Users\24101A0079\Desktop\Application Tracking System\dummy_resume.pdf"
+    resume_path = r"C:\Users\Prem\Desktop\AI_ATS\dummy_resume.pdf"
 
     result = agent.invoke({
         "messages": [
@@ -19,7 +19,7 @@ def main():
 
     resume = result["structured_response"]
 
-    print(resume)
+    print(resume)   
 
 
 if __name__ == "__main__":

@@ -2,10 +2,10 @@ from agents import Resume_Extractor
 from rich import print
 
 
-
 def main():
     agent = Resume_Extractor()
 
+    # Note: Update this path to your local dummy_resume.pdf location
     resume_path = r"C:\Users\Prem\Desktop\AI_ATS\dummy_resume.pdf"
 
     result = agent.invoke({
@@ -19,7 +19,7 @@ def main():
 
     resume = result["structured_response"]
 
-    print(resume)   
+    print(resume)
 
 
 if __name__ == "__main__":

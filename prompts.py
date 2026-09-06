@@ -1,3 +1,5 @@
+from langchain_core.prompts import PromptTemplate
+
 def ResumeExtractor():
     E_prompt = """
     You are an AI Resume Parser.
@@ -86,3 +88,41 @@ Do not add technologies, descriptions, links, qualifications, or experience that
     """
 
     return E_prompt
+
+validator_prompt = PromptTemplate.from_template("""
+You are a resume validation agent.
+
+Your job is to determine whether the provided extracted document data
+actually represents a resume or CV.
+
+Evaluate the data using these criteria:
+
+1. The document should contain meaningful personal information or identity.
+2. It should contain resume-related information such as education,
+   skills, experience, projects, certifications, achievements, or similar.
+3. The information should look like a professional or academic resume/CV.
+4. Do not assume missing information is present.
+5. Do not invent any information.
+6. A document does not need to contain every resume section to be valid.
+7. If the extracted information clearly does not represent a resume,
+   mark it invalid.
+
+Return:
+- score: 0 to 100
+- is_valid: true or false
+- reason: short explanation
+
+Use this general scoring idea:
+
+90-100: Clearly a resume/CV
+75-89: Very likely a resume/CV
+50-74: Uncertain
+0-49: Probably not a resume/CV
+
+A score of 75 or above can normally be considered valid,
+but use your judgment based on the actual extracted data.
+
+Here is the extracted resume data:
+
+{resume}
+""")

@@ -1,5 +1,5 @@
 
-from agents import Resume_Extractor
+from agents import Resume_Extractor, Validator_chain
 from rich import print
 from database import get_session, save_resume
 
@@ -28,22 +28,19 @@ def main():
     state = {}
     state["resume"] = resume
 
-    session = get_session()
-
-    saved_resume = save_resume(
-        session=session,
-        user_id=1,
-        resume_data=state["resume"],
-        source="uploaded"
-    )
-
-    print("Saved Resume ID:", saved_resume.id)
-    print("Saved Version:", saved_resume.version)
-
-    session.close()
-
     print(state["resume"])
 
+    print("\n" + "=" * 50)
+    print("step 2 Validator chain working")
+    print("=" * 50)
+
+    validator = Validator_chain()
+
+    result = validator.invoke({
+    "resume": state["resume"]
+})
+
+    print(result)
 
 if __name__ == "__main__":
     main()

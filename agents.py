@@ -27,7 +27,7 @@ llm2 = ChatGroq(
 )
 
 llm3 = ChatNVIDIA(
-    model="nvidia/nemotron-3-super-120b-a12b",
+    model="llama-guard-4-12b",
     api_key=os.getenv("NVIDIA_API_KEY"),
     temperature=0
 )
@@ -49,3 +49,7 @@ def Resume_Extractor():
         system_prompt= ResumeExtractor(),
         response_format=ResumeData
     )
+
+def Validator_chain():
+    validator_chain = validator_prompt | llm2.with_structured_output(ResumeValidation)
+    return validator_chain

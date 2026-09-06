@@ -4,6 +4,19 @@ def ResumeExtractor():
 
 Your task is to extract structured information from the provided resume text and return it according to the ResumeData schema.
 
+SKILLS EXTRACTION RULES:
+
+- Do not assume that all resumes belong to engineering or computer science students.
+- Extract skills from any academic or professional background, including but not limited to engineering, commerce, science, management, arts, medicine, law, and research.
+- Use the standard categories `languages`, `frameworks`, `databases`, and `tools` when they naturally fit the resume.
+- If the resume contains skills that do not fit these categories, create an appropriate additional category based on how the skills are grouped or presented in the resume.
+- Preserve meaningful categories such as `backend`, `frontend`, `ai_ml`, `cloud`, `finance`, `accounting`, `laboratory`, `research`, etc. when they are explicitly supported by the resume.
+- Do not force a skill into an incorrect category just to fit the predefined categories.
+- Never invent a skill or category that is not supported by the resume.
+- Preserve the skill names and terminology from the resume as accurately as possible.
+- If a predefined category is not present in the resume, leave it empty/null.
+- Group related skills logically and avoid unnecessary duplication.
+
 ## RULES
 
 1. Extract information ONLY from the provided resume.

@@ -1,11 +1,11 @@
 from pydantic import BaseModel, ConfigDict, Field
 from typing import Optional, List
 
-
+# USER DATA
 class Project(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
-    technologies: List[str] = []
+    technologies: List[str]= Field(default_factory=list)
     live_link: Optional[str] = None
 
 class Experience(BaseModel):
@@ -13,15 +13,18 @@ class Experience(BaseModel):
     role: Optional[str] = None
     duration: Optional[str] = None
     location: Optional[str] = None
-    responsibilities: List[str] = []
+    responsibilities: List[str] = Field(default_factory=list)
 
+class Skills(BaseModel):
+    skills: dict[str, list[str]]
+    
 class Education(BaseModel):
     degree: Optional[str] = None
     institution: Optional[str] = None
     location: Optional[str] = None
     duration: Optional[str] = None
     gpa: Optional[str] = None
-    coursework: List[str] = []
+    coursework: List[str] = Field(default_factory=list)
 
 
 class ResumeData(BaseModel):
@@ -36,7 +39,7 @@ class ResumeData(BaseModel):
     location: Optional[str] = None
 
     education: List[Education] = Field(default_factory=list)
-    skills: List[str] = Field(default_factory=list)
+    skills: List[Skills] = Field(default_factory=list)
     experience: List[Experience] = Field(default_factory=list)
 
     projects: List[Project] = Field(default_factory=list)

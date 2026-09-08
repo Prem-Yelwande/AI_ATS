@@ -26,11 +26,6 @@ class Education(BaseModel):
     gpa: Optional[str] = None
     coursework: List[str] = Field(default_factory=list)
 
-class ResumeValidation(BaseModel):
-    score: int = Field(ge=0, le=100)
-    is_valid: bool
-    reason: str
-
 class ResumeData(BaseModel):
     model_config = ConfigDict(extra="allow")
 
@@ -53,3 +48,7 @@ class ResumeData(BaseModel):
 
     summary: Optional[str] = None
 
+class ResumeValidation(BaseModel):
+    score: int = Field(ge=0, le=100)
+    is_valid: bool
+    reason: str

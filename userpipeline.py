@@ -1,18 +1,14 @@
-
 from agents import Resume_Extractor, Validator_chain
-from rich import print
 from database import get_session, save_resume
 
 
-def main():
+def process_resume(resume_path, user_id):
+
     print("\n" + "=" * 50)
     print("step 1 Extractor agent working")
     print("=" * 50)
 
     agent = Resume_Extractor()
-
-    # Note: Update this path to your local dummy_resume.pdf location
-    resume_path = r"C:\Users\student\Desktop\AI_ATS\Resume_Template.pdf"
 
     result = agent.invoke({
         "messages": [
@@ -25,10 +21,7 @@ def main():
 
     resume = result["structured_response"]
 
-    state = {}
-    state["resume"] = resume
-
-    print(state["resume"])
+    print(resume)
 
     print("\n" + "=" * 50)
     print("step 2 Validator chain working")
@@ -37,28 +30,29 @@ def main():
     validator = Validator_chain()
 
     result = validator.invoke({
-    "resume": state["resume"]
-})
+        "resume": resume
+    })
 
     print(result)
 
     if result.is_valid:
+
         session = get_session()
 
         resume_record = save_resume(
             session=session,
-            user_id=1,
-            resume_data=state["resume"],
+            user_id=user_id,
+            resume_data=resume,
             source="uploaded"
-    )
+        )
 
-    print("\nResume saved successfully!")
-    print("Resume ID:", resume_record.id)
-    print("User ID:", resume_record.user_id)
-    print("Version:", resume_record.version)
+        print("\nResume saved successfully!")
+        print("Resume ID:", resume_record.id)
+        print("User ID:", resume_record.user_id)
+        print("Version:", resume_record.version)
 
-if __name__ == "__main__":
-    main()
+        return resume_record
 
-    
-
+    else:
+        print("\nResume validation failed!")
+        return None

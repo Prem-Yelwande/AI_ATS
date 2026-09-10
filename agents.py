@@ -20,18 +20,6 @@ llm1 = ChatMistralAI(
     temperature=0
 )
 
-llm2 = ChatGroq(
-    model = "openai/gpt-oss-20b",
-    api_key = os.getenv("GROQ_API_KEY"),
-    temperature=0
-)
-
-llm3 = ChatNVIDIA(
-    model="llama-guard-4-12b",
-    api_key=os.getenv("NVIDIA_API_KEY"),
-    temperature=0
-)
-
 llm4 = ChatGoogleGenerativeAI(
     model="gemini-3.6-flash",
     temperature=0,
@@ -51,5 +39,5 @@ def Resume_Extractor():
     )
 
 def Validator_chain():
-    validator_chain = validator_prompt | llm2.with_structured_output(ResumeValidation)
+    validator_chain = validator_prompt | llm4.with_structured_output(ResumeValidation)
     return validator_chain

@@ -20,11 +20,24 @@ llm1 = ChatMistralAI(
     temperature=0
 )
 
+llm2 = ChatGroq(
+    model = "openai/gpt-oss-20b",
+    api_key = os.getenv("GROQ_API_KEY"),
+    temperature=0
+)
+ 
+llm3 = ChatNVIDIA(
+    model="llama-guard-4-12b",
+    api_key=os.getenv("NVIDIA_API_KEY"),
+    temperature=0
+)
+ 
 llm4 = ChatGoogleGenerativeAI(
     model="gemini-3.6-flash",
     temperature=0,
     api_key=os.getenv("GOOGLE_API_KEY")
 )
+
 
 def Resume_Extractor():
     return create_agent(

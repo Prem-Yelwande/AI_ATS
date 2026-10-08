@@ -1,4 +1,6 @@
-from fastapi import FastAPI, UploadFile, File
+from pathlib import Path
+
+from fastapi import FastAPI, File, HTTPException, UploadFile
 
 app = FastAPI(title="Miko API")
 
@@ -7,16 +9,24 @@ app = FastAPI(title="Miko API")
 def home():
     return {"message": "Miko API is running"}
 
+
 @app.post("/resume/upload")
 async def upload_resume(file: UploadFile = File(...)):
+    # Keep only the basename so a client cannot write outside the working directory.
+    safe_name = Path(file.filename or "resume").name
+    if not safe_name or safe_name in {".", ".."}:
+        raise HTTPException(status_code=400, detail="A valid resume filename is required")
 
-    resume_path = f"temp_{file.filename}"
+    payload = await file.read()
+    if not payload:
+        raise HTTPException(status_code=400, detail="Uploaded resume is empty")
 
-    with open(resume_path, "wb") as f:
-        f.write(await file.read())
+    resume_path = f"temp_{safe_name}"
+    with open(resume_path, "wb") as output:
+        output.write(payload)
 
     return {
-        "filename": file.filename,
+        "filename": safe_name,
         "path": resume_path,
-        "message": "Resume received and saved"
+        "message": "Resume received and saved",
     }

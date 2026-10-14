@@ -32,4 +32,12 @@ The internship details page provides complete information about an opportunity a
 
 Miko is currently in the active development phase, with the resume extraction and structured resume-data pipeline being developed first.
 
+## Getting Started (dev)
 
+```bash
+uv sync
+# Configure required API keys in a .env file
+uv run python main.py
+```
+
+Core modules: `agents.py`, `states.py`, `tools.py`, `prompts.py`, `database.py`.

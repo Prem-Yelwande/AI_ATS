@@ -4,6 +4,7 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 
 app = FastAPI(title="Miko API")
 
+# Supported resume formats for ATS processing.
 ALLOWED_EXTENSIONS = {".pdf", ".docx", ".doc"}
 MAX_UPLOAD_BYTES = 5 * 1024 * 1024  # 5 MB
 
@@ -33,6 +34,7 @@ async def upload_resume(file: UploadFile = File(...)):
     if len(payload) > MAX_UPLOAD_BYTES:
         raise HTTPException(status_code=413, detail="Resume exceeds the 5 MB size limit")
 
+    # Temporary file is saved with a temp_ prefix; clean up after processing in production.
     resume_path = f"temp_{safe_name}"
     with open(resume_path, "wb") as output:
         output.write(payload)

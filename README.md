@@ -36,8 +36,17 @@ Miko is currently in the active development phase, with the resume extraction an
 
 ```bash
 uv sync
-# Configure required API keys in a .env file
+# Create a .env file with required API keys, e.g.:
+# OPENAI_API_KEY=your_key_here
+# ANTHROPIC_API_KEY=your_key_here
 uv run python main.py
 ```
 
-Core modules: `agents.py`, `states.py`, `tools.py`, `prompts.py`, `database.py`.
+Core modules:
+- `agents.py` — agent definitions and orchestration
+- `states.py` — application state management
+- `tools.py` — utility tools for agents
+- `prompts.py` — prompt templates
+- `database.py` — data persistence layer
+
+See individual files for detailed implementation notes.

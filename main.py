@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Dict, Any
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
 
@@ -6,16 +7,16 @@ app = FastAPI(title="Miko API")
 
 # Supported resume formats for ATS processing.
 ALLOWED_EXTENSIONS = {".pdf", ".docx", ".doc"}
-MAX_UPLOAD_BYTES = 5 * 1024 * 1024  # 5 MB
+MAX_UPLOAD_BYTES = 5 * 1024 * 1024  # 5 MB limit to prevent large file abuse
 
 
 @app.get("/")
-def home():
+def home() -> Dict[str, str]:
     return {"message": "Miko API is running"}
 
 
 @app.post("/resume/upload")
-async def upload_resume(file: UploadFile = File(...)):
+async def upload_resume(file: UploadFile = File(...)) -> Dict[str, Any]:
     # Keep only the basename so a client cannot write outside the working directory.
     safe_name = Path(file.filename or "resume").name
     if not safe_name or safe_name in {".", ".."}:

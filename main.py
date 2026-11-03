@@ -12,11 +12,17 @@ MAX_UPLOAD_BYTES = 5 * 1024 * 1024  # 5 MB limit to prevent large file abuse
 
 @app.get("/")
 def home() -> Dict[str, str]:
+    """Health-check endpoint confirming the API is up."""
     return {"message": "Miko API is running"}
 
 
 @app.post("/resume/upload")
 async def upload_resume(file: UploadFile = File(...)) -> Dict[str, Any]:
+    """Accept a resume file, validate type and size, then save it temporarily.
+
+    Allowed formats: .pdf, .docx, .doc. Maximum size: 5 MB.
+    The file is stored with a temp_ prefix for later processing.
+    """
     # Keep only the basename so a client cannot write outside the working directory.
     safe_name = Path(file.filename or "resume").name
     if not safe_name or safe_name in {".", ".."}:

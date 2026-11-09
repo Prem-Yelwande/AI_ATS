@@ -22,6 +22,7 @@ async def upload_resume(file: UploadFile = File(...)) -> Dict[str, Any]:
 
     Allowed formats: .pdf, .docx, .doc. Maximum size: 5 MB.
     The file is stored with a temp_ prefix for later processing.
+    Note: content-type is not strictly enforced here; extension + size checks provide the primary validation.
     """
     # Keep only the basename so a client cannot write outside the working directory.
     safe_name = Path(file.filename or "resume").name
@@ -32,16 +33,20 @@ async def upload_resume(file: UploadFile = File(...)) -> Dict[str, Any]:
     if suffix not in ALLOWED_EXTENSIONS:
         raise HTTPException(
             status_code=400,
-            detail=f"Unsupported file type '{suffix}'. Allowed: {', '.join(sorted(ALLOWED_EXTENSIONS))}",
+            detail=f"Unsupported file type '{suffix}'. Allowed: {', '.join(sorted(ALLOWED_EXTENSIONS))}. Please upload a PDF or Word document.",
         )
 
     payload = await file.read()
     if not payload:
-        raise HTTPException(status_code=400, detail="Uploaded resume is empty")
+        raise HTTPException(status_code=400, detail="Uploaded resume is empty. Please select a non-empty file.")
     if len(payload) > MAX_UPLOAD_BYTES:
-        raise HTTPException(status_code=413, detail="Resume exceeds the 5 MB size limit")
+        raise HTTPException(
+            status_code=413,
+            detail=f"Resume exceeds the 5 MB size limit (received {len(payload) // 1024} KB). Please compress or use a smaller file.",
+        )
 
     # Temporary file is saved with a temp_ prefix; clean up after processing in production.
+    # In production, prefer a proper temp directory and background cleanup.
     resume_path = f"temp_{safe_name}"
     with open(resume_path, "wb") as output:
         output.write(payload)

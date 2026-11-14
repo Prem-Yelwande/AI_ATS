@@ -13,7 +13,7 @@ MAX_UPLOAD_BYTES = 5 * 1024 * 1024  # 5 MB limit to prevent large file abuse
 @app.get("/")
 def home() -> Dict[str, str]:
     """Health-check endpoint confirming the API is up."""
-    return {"message": "Miko API is running"}
+    return {"message": "Miko API is running", "status": "ok"}
 
 
 @app.post("/resume/upload")
@@ -46,7 +46,7 @@ async def upload_resume(file: UploadFile = File(...)) -> Dict[str, Any]:
         )
 
     # Temporary file is saved with a temp_ prefix; clean up after processing in production.
-    # In production, prefer a proper temp directory and background cleanup.
+    # In production, prefer a proper temp directory (e.g. tempfile.NamedTemporaryFile) and background cleanup.
     resume_path = f"temp_{safe_name}"
     with open(resume_path, "wb") as output:
         output.write(payload)
@@ -54,5 +54,6 @@ async def upload_resume(file: UploadFile = File(...)) -> Dict[str, Any]:
     return {
         "filename": safe_name,
         "path": resume_path,
+        "size_bytes": len(payload),
         "message": "Resume received and saved",
     }

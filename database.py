@@ -1,3 +1,5 @@
+from typing import Any
+
 from sqlmodel import SQLModel, create_engine, Session, select
 from db_models import User, Resume
 
@@ -5,13 +7,16 @@ DATABASE_URL = "sqlite:///miko.db"
 
 engine = create_engine(DATABASE_URL, echo=True)
 
-def create_db_and_tables():
+def create_db_and_tables() -> None:
+    """Create all tables defined in SQLModel metadata."""
     SQLModel.metadata.create_all(engine)
 
-def get_session():
+def get_session() -> Session:
+    """Return a new database session."""
     return Session(engine)
 
-def get_next_resume_version(session, user_id: int) -> int:
+def get_next_resume_version(session: Session, user_id: int) -> int:
+    """Return the next version number for a user's resume (starts at 1)."""
     statement = select(Resume).where(Resume.user_id == user_id)
     resumes = session.exec(statement).all()
 
@@ -22,7 +27,14 @@ def get_next_resume_version(session, user_id: int) -> int:
 
     return max(versions) + 1
 
-def save_resume(session, user_id: int, resume_data, source: str, job_id: int | None = None):
+def save_resume(
+    session: Session,
+    user_id: int,
+    resume_data: Any,
+    source: str,
+    job_id: int | None = None,
+) -> Resume:
+    """Persist a new resume version for the given user."""
     version = get_next_resume_version(session, user_id)
 
     resume = Resume(
@@ -36,9 +48,9 @@ def save_resume(session, user_id: int, resume_data, source: str, job_id: int | N
     session.add(resume)
     try:
         session.commit()
-    except Exception:
+    except Exception as exc:
         session.rollback()
-        raise
+        raise RuntimeError(f"Failed to save resume for user {user_id}: {exc}") from exc
     session.refresh(resume)
 
     return resume
